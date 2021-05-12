@@ -9,10 +9,10 @@ phases:
       - aws ecr get-login-password --region $AWS_DEFAULT_REGION | docker login --username AWS --password-stdin $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com
 
       - echo "Building a Docker image.."
-      - docker build -f Dockerfile
+      - docker build -t image .
 
       - echo "Tagging Docker image for ECR.."
-      - docker tag myImage ${ECR_REPO}:${CODEBUILD_SOURCE_VERSION}
+      - docker tag image ${ECR_REPO}:${CODEBUILD_SOURCE_VERSION}
       
       - echo "Pushing Docker image to ECR.."
       - docker push ${ECR_REPO}:${CODEBUILD_SOURCE_VERSION}
