@@ -8,7 +8,7 @@ COPY . .
 
 WORKDIR /Desktop/app
 
-RUN pip install -r requirements.txt
+RUN pip install Flask==1.0.2
 
 EXPOSE 5000
 
