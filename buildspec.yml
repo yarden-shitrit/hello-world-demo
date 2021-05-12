@@ -8,7 +8,7 @@ phases:
       - echo $CODEBUILD_SOURCE_VERSION
       - TAG=$(echo $CODEBUILD_SOURCE_VERSION | head -c 8)
       - echo Logging in to Amazon ECR...
-      - $(aws ecr get-login --no-include-email --region us-east-1)
+      - aws ecr get-login-password --region $AWS_DEFAULT_REGION | docker login --username AWS --password-stdin $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com
   build:
     commands:
       - echo $TAG
