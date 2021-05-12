@@ -1,19 +1,23 @@
 version: 0.2
 env:
   variables:
-    REPO: "753392824297.dkr.ecr.us-east-1.amazonaws.com/hello-world-demo" 
+    ECR_REPO: 753392824297.dkr.ecr.us-east-1.amazonaws.com/hello-world-demo
 phases:
-  pre_build:
-    commands:
-      - echo $CODEBUILD_SOURCE_VERSION
-      - TAG=$(echo $CODEBUILD_SOURCE_VERSION | head -c 8)
-      - echo Logging in to Amazon ECR...
-      - aws ecr get-login-password --region $AWS_DEFAULT_REGION | docker login --username AWS --password-stdin $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com
+  install:
+    runtime-versions:
+      docker: 18
   build:
     commands:
-      - echo $TAG
-      - echo $REPO
-      - docker build --tag $REPO:$TAG .
-  post_build:
-    commands:
-      - docker push $REPO:$TAG
+      - echo "Building a Docker image.."
+      - docker build -t myImage . --file Dockerfile
+
+      - echo "Tagging Docker image for ECR.."
+      - docker tag myImage ${ECR_REPO}:${CODEBUILD_SOURCE_VERSION}
+
+      - echo "Logging into ECR.."
+      - aws ecr get-login-password --region $AWS_DEFAULT_REGION | docker login --username AWS --password-stdin $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com
+      
+      - echo "Pushing Docker image to ECR.."
+      - docker push ${ECR_REPO}:${CODEBUILD_SOURCE_VERSION}
+      
+      - echo "Done."
