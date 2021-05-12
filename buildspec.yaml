@@ -12,9 +12,7 @@ phases:
     commands:
       - echo Building Docker test image...
       - docker build -t app:latest .
-      - docker tag app+latest 753392824297.dkr.ecr.us-east-1.amazonaws.com/app
-      - echo "[+] Installing dependencies...."
-      - pip install -r requirements.txt -t hello_world/build/
+      - docker tag app:latest 753392824297.dkr.ecr.us-east-1.amazonaws.com/app
   post_build:
     commands:
       - echo Pushing the Docker image...
