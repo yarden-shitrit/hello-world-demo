@@ -1,0 +1,19 @@
+version: 0.2
+
+phases:
+  install:
+    runtime-versions:
+      docker: 18
+  pre_build:
+    commands:
+      - echo Logging in to Amazon ECR...
+      - $(aws ecr get-login --region $AWS_DEFAULT_REGION --no-include-email)
+  build:
+    commands:
+      - echo Building Docker test image...
+      - docker build -t app:latest .
+      - docker tag app:latest 753392824297.dkr.ecr.us-east-1.amazonaws.com/app
+  post_build:
+    commands:
+      - echo Pushing the Docker image...
+      - docker push 753392824297.dkr.ecr.us-east-1.amazonaws.com/app
